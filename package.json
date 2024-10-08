@@ -1,0 +1,29 @@
+{
+  "name": "smashapi_sd",
+  "version": "1.0.0",
+  "description": "This is package.json",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChepeUAQ/SmashAPI_SD.git"
+  },
+  "keywords": [
+    "Smash",
+    "API"
+  ],
+  "author": "ChepeMorales",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChepeUAQ/SmashAPI_SD/issues"
+  },
+  "homepage": "https://github.com/ChepeUAQ/SmashAPI_SD#readme",
+  "dependencies": {
+    "body-parser": "1.20.3",
+    "express": "4.21.0",
+    "mongodb": "6.9.0",
+    "mongoose": "8.7.0"
+  }
+}
