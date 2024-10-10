@@ -75,3 +75,7 @@ db.Top.insertMany([
   { rank: 50, tag: "Jakal", firstName: "Jude", nationality: "USA", mainCharacter: "Wolf" }
 ])
 ```
+
+```
+chmod +x runAPI.sh
+```
