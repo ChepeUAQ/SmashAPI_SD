@@ -22,7 +22,7 @@ docker exec -it MongoSMASH mongosh
 
 use smashdb
 db.createCollection('Top')
-db.Top.isertMany([
+db.Top.insertMany([
   { rank: 1, tag: "acola", firstName: "Unknown", nationality: "JPN", mainCharacter: "Steve" },
   { rank: 2, tag: "Miya", firstName: "Unknown", nationality: "JPN", mainCharacter: "Mr. Game and Watch" },
   { rank: 3, tag: "Sonix", firstName: "Carlos", nationality: "DOM", mainCharacter: "Sonic" },
