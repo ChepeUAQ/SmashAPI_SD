@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/smashdb', { 
+    await mongoose.connect('mongodb://172.17.0.2:27017/smashdb', { 
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
