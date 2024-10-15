@@ -17,7 +17,15 @@
 			"dependsOn": [
 				"docker-build"
 			],
-			"platform": "node"
+			"platform": "node",
+			"dockerRun": {
+				"ports": [
+					{
+						"containerPort": 5000,
+						"hostPort": 5000
+					}
+				]
+			}
 		},
 		{
 			"type": "docker-run",
@@ -29,7 +37,13 @@
 				"env": {
 					"DEBUG": "*",
 					"NODE_ENV": "development"
-				}
+				},
+				"ports": [
+					{
+						"containerPort": 5000,
+						"hostPort": 5000
+					}
+				]
 			},
 			"node": {
 				"enableDebugging": true

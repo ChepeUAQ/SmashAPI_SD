@@ -10,18 +10,22 @@ const PlayerSchema = new mongoose.Schema({
   },
   tag: {
     type: String,
+    default: "####",
     required: true,
   },
   firstName: {
     type: String,
     default: "Unknown",
+    required:true
   },
   nationality: {
     type: String,
-    required: true,
+    default: "UNK",
+    required: true
   },
   mainCharacter: {
     type: String,
+    default: "Mario",
     required: true,
   }
 });
