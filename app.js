@@ -260,8 +260,6 @@ app.get('/players/nationality/:nationality', async (req, res) => {
 });
 
 
-
-
 /**
  * @swagger
  * /players/{rank}:
@@ -301,54 +299,36 @@ app.get('/players/nationality/:nationality', async (req, res) => {
  */
 app.put('/players/:rank', async (req, res) => {
   try {
-    if (req.body.rank && req.body.rank !== req.params.rank) {
-      const existingPlayer = await Player.findOne({ rank: req.body.rank });
+    const { rank, tag, firstName, nationality, mainCharacter } = req.body;
+
+    if (!firstName || !rank || !nationality || !tag || !mainCharacter ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (rank && rank !== req.params.rank) {
+      const existingPlayer = await Player.findOne({ rank: rank });
       if (existingPlayer) {
         return res.status(400).json({ message: "Rank already in use" });
       }
     }
 
     const updatedPlayer = await Player.findOneAndUpdate(
-      { rank: req.params.rank },  
-      req.body,                
+      { rank: req.params.rank }, 
+      req.body,                 
       { new: true, runValidators: true }
     );
-    if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
+
+    if (!updatedPlayer) {
+      return res.status(404).json({ message: "Player not found" });
+    }
+
     res.json(updatedPlayer);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-/**
- * @swagger
- * /players/{rank}:
- *   delete:
- *     summary: Delete a player by rank
- *     parameters:
- *       - in: path
- *         name: rank
- *         required: true
- *         schema:
- *           type: integer
- *         description: The player's rank
- *     responses:
- *       200:
- *         description: Player deleted
- *       404:
- *         description: Player not found
- *       500:
- *         description: Server error
- */
-app.delete('/players/:rank', async (req, res) => {
-  try {
-    const deletedPlayer = await Player.findOneAndDelete({ rank: req.params.rank });
-    if (!deletedPlayer) return res.status(404).json({ message: "Player not found" });
-    res.json({ message: "Player deleted" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+
 
 /**
  * @swagger
@@ -369,6 +349,8 @@ app.delete('/players/:rank', async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
+ *               rank:
+ *                 type: integer
  *               tag:
  *                 type: string
  *               firstName:
@@ -410,6 +392,36 @@ app.patch('/players/:rank', async (req, res) => {
   }
 });
 
+
+/**
+ * @swagger
+ * /players/{rank}:
+ *   delete:
+ *     summary: Delete a player by rank
+ *     parameters:
+ *       - in: path
+ *         name: rank
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The player's rank
+ *     responses:
+ *       200:
+ *         description: Player deleted
+ *       404:
+ *         description: Player not found
+ *       500:
+ *         description: Server error
+ */
+app.delete('/players/:rank', async (req, res) => {
+  try {
+    const deletedPlayer = await Player.findOneAndDelete({ rank: req.params.rank });
+    if (!deletedPlayer) return res.status(404).json({ message: "Player not found" });
+    res.json({ message: "Player deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
