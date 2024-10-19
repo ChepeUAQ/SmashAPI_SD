@@ -1,20 +1,21 @@
-Welcome to the SmashAPI setup guide.
+## Welcome to the SmashAPI setup guide.
 
-# Here you will find the steps to configure and run the SmashAPI from you computer
+**This is a _WINDOWS ONLY_ build. It has NOT be tested on LINUX or MAC**
 
 ## Make sure you have these programs installed:
-### 1) Docker Desktop
-https://docs.docker.com/desktop/ 
 
-### 2) NodeJS
-https://nodejs.org/en/download/package-manager/current
+### 1) Any of these browsers:
+- [Mozilla Firefox](https://www.mozilla.org/firefox/)
+- [Google Chrome](https://www.google.com/chrome/)
+- [Microsoft Edge](https://www.microsoft.com/edge/)
+
+### 2) [Docker Desktop](https://docs.docker.com/desktop/)
 
 **Please make sure to correctly follow the installation steps correctly**
 
-```
-docker-compose build
-docker-compose up -d
-```
+## Clone this repository in your local directory
+Use this command to easily clone the files to your desired directory
+``` git clone  ```
 
 ```
 docker run --name MongoSMASH -p 27017:27017 -v mongo:/data/db -d mongo
