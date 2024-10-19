@@ -1,6 +1,7 @@
 // app.js
 
 const express = require('express');
+const redis = require('redis');
 const bodyParser = require('body-parser');
 const connectDB = require('./db');
 const Player = require('./models/Player');
@@ -9,6 +10,18 @@ const Player = require('./models/Player');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
+// Redis setup
+const redisClient = redis.createClient({
+  url: 'redis://172.17.0.3:6379'
+});
+
+redisClient.connect().catch(err => console.error('Redis connection error: ', err));
+redisClient.on('connect', () => {
+  console.log('Successfully connected to Redis server...');
+});
+
+
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -16,6 +29,7 @@ app.use(bodyParser.json());
 connectDB();
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 /**
  * @swagger
@@ -46,6 +60,14 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *         description: Bad request
  */
 app.post('/players', async (req, res) => {
+  const { rank, tag, firstName, nationality, mainCharacter } = req.body;
+
+  if (!rank || !tag || !firstName || !nationality || !mainCharacter) {
+    return res.status(400).json({
+      message: "Missing required fields."
+    });
+  }
+
   try {
     const existingPlayer = await Player.findOne({ rank: req.body.rank });
     if (existingPlayer) {
@@ -120,20 +142,33 @@ app.get('/players', async (req, res) => {
  *         description: Server error
  */
 app.get('/players/:rank', async (req, res) => {
+  const rank = req.params.rank;
+  const redisKey = `player:rank:${rank}`; 
+
   try {
-    const player = await Player.findOne({ rank: req.params.rank });
+    const cachedPlayer = await redisClient.get(redisKey);
+
+    if (cachedPlayer) {
+      return res.json(JSON.parse(cachedPlayer)); 
+    }
+
+    const player = await Player.findOne({ rank });
     if (!player) return res.status(404).json({ message: "Player not found" });
+
+    await redisClient.set(redisKey, JSON.stringify(player), { EX: 1800 });
+
     res.json(player);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
+
 /**
  * @swagger
  * /players/nationality/{nationality}:
  *   get:
- *     summary: Get players by nationality
+ *     summary: Get players by nationality with pagination
  *     parameters:
  *       - in: path
  *         name: nationality
@@ -141,39 +176,90 @@ app.get('/players/:rank', async (req, res) => {
  *         schema:
  *           type: string
  *         description: The nationality of the players
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: The page number (default is 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: The number of players per page (default is 10)
  *     responses:
  *       200:
- *         description: A list of players with the same nationality
+ *         description: A list of players with the same nationality and pagination
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   name:
- *                     type: string
- *                   rank:
- *                     type: integer
- *                   nationality:
- *                     type: string
- *                   mainCharacter:
- *                     type: string
+ *               type: object
+ *               properties:
+ *                 totalPlayers:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
+ *                 currentPage:
+ *                   type: integer
+ *                 players:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       tag:
+ *                         type: string
+ *                       rank:
+ *                         type: integer
+ *                       nationality:
+ *                         type: string
+ *                       mainCharacter:
+ *                         type: string
  *       404:
  *         description: No players found with the given nationality
  *       500:
  *         description: Server error
  */
 app.get('/players/nationality/:nationality', async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const nationality = req.params.nationality.toUpperCase(); 
+  const redisKey = `players:nationality:${nationality}:page:${page}:limit:${limit}`;
+
   try {
-    const players = await Player.find({ nationality: req.params.nationality.toUpperCase() });
-    if (!players.length) return res.status(404).json({ message: "No players found with this nationality" });
-    
-    res.json(players);
+    const cachedPlayers = await redisClient.get(redisKey);
+
+    if (cachedPlayers) {
+      return res.json(JSON.parse(cachedPlayers));
+    }
+
+    const totalPlayers = await Player.countDocuments({ nationality });
+    if (totalPlayers === 0) {
+      return res.status(404).json({ message: "No players found with this nationality" });
+    }
+
+    const totalPages = Math.ceil(totalPlayers / limit);
+
+    const players = await Player.find({ nationality })
+      .limit(parseInt(limit))
+      .skip((page - 1) * limit);
+
+    await redisClient.set(redisKey, JSON.stringify({
+      totalPlayers,
+      totalPages,
+      currentPage: parseInt(page),
+      players,
+    }), { EX: 1800 });
+
+    res.json({
+      totalPlayers,
+      totalPages,
+      currentPage: parseInt(page),
+      players,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
+
 
 
 /**

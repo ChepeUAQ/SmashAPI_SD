@@ -10,7 +10,7 @@ const PlayerSchema = new mongoose.Schema({
   },
   tag: {
     type: String,
-    default: "####",
+    default: "####",  
     required: true,
   },
   firstName: {
