@@ -55,6 +55,13 @@ use smashdb
 db.createCollection('Top')
 ```
 
+>[!TIP]
+> To avoid errors please start your containers in the same order as they were given here
+>
+> Do this by starting them on docker desktop or using the command
+>
+> ``docker start <container-name>``
+
 ## The API is ready to be used
 Type this command to run the API itself:
 
@@ -64,7 +71,7 @@ Now you can use it on you browser by typing on your URL search bar:
 
 ``localhost:5000/api-docs``
 
-## Insert recommended data (Optional)
+## Insert sample data (Optional but Recommended)
 Your database collection will be empty at this point, you can insert elements one by one or you can use the following command on your mongo bash
 ```
 db.Top.insertMany([
@@ -121,4 +128,72 @@ db.Top.insertMany([
 ])
 ```
 
+## How to use the API
+>[!TIP]
+> When inserting data always try to use the POST method **DO NOT** insert it yourself on mongo directly unless you know what you are doing
+
+If you chose to not use the sample data given previously you will need to insert your own, here's the way to do it:
+
+1. Run the API on the software of your choice (Postman, Thunder Client, Swagger...)
+2. Open a new request and select the POST method
+3. On your body enter data formatted like this:
+
+```
+{
+  "rank": 1,
+  "tag": "PlayerTag",
+  "firstName": "PlayerName",
+  "nationality": "USA",
+  "mainCharacter": "Mario"
+}
+```
+
+4. You should recieve a 201 status code signaling the correct insertion of your data
+
+From then on, use the methods provided on the Swagger documentation to further expand your data. Use the same format for the body when requested.
+
 ## Error handling
+>[!IMPORTANT]
+> Before anything check no other aplications are using ports 5000, 27017 or 6379
+
+As with any software, there is bound to be error at some point in their lifetime. Here we will address the most common errors and how to fix them:
+
+### API doesn't run / Runs for a little while then stops
+This is commonly caused because you didn't **start the containers in the order they are supposed** to so check that.
+If that doesn't work then follow these steps:
+1. Make sure the Redis and Mongo containers are running
+2. Run these commands one by one on your terminal:
+
+``docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mongo-smash``
+
+``docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redis``
+
+
+These should output 172.17.0.2 and 172.17.0.3 respectively, if not then you are encountering an extraordinary case and **will need to modify code**. **Make sure to save the IP addresses you were provided with if this is the case**
+
+3. Go to the SmashAPI directory and open the connections folder
+4. Open ``db.js`` and on line number 7 replace the IP address with the one that was given to you on the first command (mongo-smash)
+5. Save the file
+6. Repeat the process with ``redis.js``
+
+>[!WARNING]
+> **DO NOT MODIFY ANYTHING ELSE IN THE SCRITPS**
+
+### API runs but all methods return errors
+If this is the case you have to make sure you have data on your database and its correctly formatted.
+
+1. Enter the mongo bash on you mongo-smash container
+   
+   ``docker exec -it mongo-smash mongosh``
+   
+   ``use smashdb``
+
+3.  Look for missing or misformatted data
+   
+   ``db.Top.find()``
+
+4.  Delete it
+
+   ``db.Top.finOneAndDelete({id: exampleid123456ABCD})``
+
+When inserting data, please refer to the [HOW TO USE THE API](#how-to-use-the-api) section
