@@ -37,7 +37,7 @@ app.post('/players', async (req, res) => {
     const player = await newPlayer.save();
     res.status(201).json(player);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: "Internal sever error!" });
   }
 });
 
@@ -61,7 +61,7 @@ app.get('/players/:rank', async (req, res) => {
 
     res.json(player);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Internal sever error!" });
   }
 });
 
@@ -105,8 +105,7 @@ app.get('/players/nationality/:nationality', async (req, res) => {
       players,
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+    res.status(500).json({ message: "Internal sever error!" });  }
 });
 
 
@@ -137,8 +136,7 @@ app.put('/players/:rank', async (req, res) => {
 
     res.json(updatedPlayer);
   } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+    res.status(500).json({ message: "Internal sever error!" });  }
 });
 
 
@@ -161,8 +159,7 @@ app.patch('/players/:rank', async (req, res) => {
     
     res.json(updatedPlayer);
   } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+    res.status(500).json({ message: "Internal sever error!" });  }
 });
 
 
@@ -170,7 +167,8 @@ app.delete('/players/:rank', async (req, res) => {
   try {
     const deletedPlayer = await Player.findOneAndDelete({ rank: req.params.rank });
     if (!deletedPlayer) return res.status(404).json({ message: "Player not found" });
-    res.json({ message: "Player deleted" });
+    
+    res.status(204).json({ message: "Player deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
