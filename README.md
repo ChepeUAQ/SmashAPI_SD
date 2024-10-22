@@ -37,7 +37,6 @@ Open Docker Desktop an your command interpreter then run the following commands:
 
 Then in you command interpreter go to the directory of SmashAPI, when you get there you will build the API image and run the container:
 1) ``docker build -t smashapi:1 .``
-2) ``docker run -d --name smashapi -p 5000:5000 smashapi:1``
 
 ## Create the database and collection
 Access the mongo container bash:
@@ -52,7 +51,11 @@ db.createCollection('Top')
 ``
 
 ## The API is ready to be used
-You can use it on you browser by typing on your URL search bar:
+Type this command to run the API itself:
+
+``docker run -d --name smashapi -p 5000:5000 smashapi:1``
+
+Now you can use it on you browser by typing on your URL search bar:
 
 ``localhost:5000/api-docs``
 
