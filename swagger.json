@@ -1,0 +1,303 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Player API",
+      "version": "1.0.0",
+      "description": "API to manage players"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:5000",
+        "description": "Local server"
+      }
+    ],
+    "paths": {
+      "/players": {
+        "post": {
+          "summary": "Add a new player",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rank": {
+                      "type": "integer"
+                    },
+                    "tag": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "nationality": {
+                      "type": "string"
+                    },
+                    "mainCharacter": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Player created successfully"
+            },
+            "400": {
+              "description": "Bad request"
+            },
+            "409": {
+                "description": "Rank already in use"
+            }
+          }
+        }
+      },
+      "/players/{rank}": {
+        "get": {
+          "summary": "Get a player by rank",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "rank",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "The player's rank"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The player information",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "rank": {
+                        "type": "integer"
+                      },
+                      "tag": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Player not found"
+            }
+          }
+        },
+        "put": {
+          "summary": "Update a player by rank",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "rank",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "The player's rank"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rank": {
+                      "type": "integer"
+                    },
+                    "tag": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "nationality": {
+                      "type": "string"
+                    },
+                    "mainCharacter": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "The updated player information"
+            },
+            "404": {
+              "description": "Player not found"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        },
+        "patch": {
+          "summary": "Partially update a player by rank",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "rank",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "The player's rank"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rank": {
+                      "type": "integer"
+                    },
+                    "tag": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "nationality": {
+                      "type": "string"
+                    },
+                    "mainCharacter": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "The updated player information"
+            },
+            "404": {
+              "description": "Player not found"
+            },
+            "409": {
+              "description": "Bad request"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a player by rank",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "rank",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "The player's rank"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Player deleted"
+            },
+            "404": {
+              "description": "Player not found"
+            }
+          }
+        }
+      },
+      "/players/nationality/{nationality}": {
+        "get": {
+          "summary": "Get players by nationality",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "nationality",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "The nationality of the players"
+            },
+            {
+              "in": "query",
+              "name": "page",
+              "schema": {
+                "type": "integer"
+              },
+              "description": "The page number (default is 1)"
+            },
+            {
+              "in": "query",
+              "name": "limit",
+              "schema": {
+                "type": "integer"
+              },
+              "description": "The number of players per page (default is 10)"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "A list of players with the same nationality and pagination",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "totalPlayers": {
+                        "type": "integer"
+                      },
+                      "totalPages": {
+                        "type": "integer"
+                      },
+                      "currentPage": {
+                        "type": "integer"
+                      },
+                      "players": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "tag": {
+                              "type": "string"
+                            },
+                            "rank": {
+                              "type": "integer"
+                            },
+                            "nationality": {
+                              "type": "string"
+                            },
+                            "mainCharacter": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "No players found with the given nationality"
+            }
+          }
+        }
+      }
+    }
+  }
+  

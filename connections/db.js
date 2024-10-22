@@ -1,4 +1,4 @@
-// db.js
+// connections/db.js
 
 const mongoose = require('mongoose');
 
