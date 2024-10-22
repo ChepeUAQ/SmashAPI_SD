@@ -1,7 +1,7 @@
 # Welcome to the SmashAPI setup guide.
 
 >[!IMPORTANT]
-> This is a **WINDOWS ONLY** build. It has NOT be tested on LINUX nor MAC
+> This buid has only been tested **ON WINDOWS ONLY**. It has NOT be tested on LINUX nor MAC
 
 ## INSTALL THE FOLLOWING PROGRAMS
 >[!NOTE]
