@@ -3,7 +3,7 @@
 >[!IMPORTANT]
 > This is a **WINDOWS ONLY** build. It has NOT be tested on LINUX nor MAC
 
-## Make sure you have these programs installed:
+## INSTALL THE FOLLOWING PROGRAMS
 >[!NOTE]
 >Please make sure to correctly follow the installation steps correctly
 
@@ -18,20 +18,20 @@
    Simply run ``wsl --install`` on your command interpreter
 
 
-## Clone this repository
+## CLONE REPOSITORY
 Use this command to easily clone the files to your desired directory
 
 ``` git clone https://github.com/ChepeUAQ/SmashAPI_SD.git ```
 
 Or simply download the zip file under the green **Code** button
 
-## Create the necessary containers
+## CREATE CONTAINERS
 >[!IMPORTANT]
 > Make sure Docker Desktop is running from this point onward
 >
 > Run these commands in the order they are shown here
 
-Open Docker Desktop an your command interpreter then run the following commands:
+Open Docker Desktop and your command interpreter then run the following commands:
 1) Mongo:
    
 ``docker run --name mongo-smash -p 27017:27017 -v mongo:/data/db -d mongo``
@@ -40,10 +40,11 @@ Open Docker Desktop an your command interpreter then run the following commands:
 
 ``docker run -d --name redis -p 6379:6379 redis``
 
-Then in you command interpreter go to the directory of SmashAPI, when you get there you will build the API image and run the container:
+Then in you command interpreter go to the directory of SmashAPI, when you get there you will build the API image:
+
 ``docker build -t smashapi:1 .``
 
-## Create the database and collection
+## CREATE DATABASE AND COLLECTION
 Access the mongo container bash:
 
 ``docker exec -it mongo-smash mongosh``
@@ -55,15 +56,16 @@ use smashdb
 db.createCollection('Top')
 ```
 
+
+## THE API IS READY
 >[!TIP]
-> To avoid errors please start your containers in the same order as they were given here
+> To avoid future errors please start your containers in the same order as they were given here
 >
 > Do this by starting them on docker desktop or using the command
 >
 > ``docker start <container-name>``
 
-## The API is ready to be used
-Type this command to run the API itself:
+Run this command to start the API itself:
 
 ``docker run -d --name smashapi -p 5000:5000 smashapi:1``
 
@@ -71,7 +73,7 @@ Now you can use it on you browser by typing on your URL search bar:
 
 ``localhost:5000/api-docs``
 
-## Insert sample data (Optional but Recommended)
+## INSERT SAMPLE DATA (Optional but Recommended)
 Your database collection will be empty at this point, you can insert elements one by one or you can use the following command on your mongo bash
 ```
 db.Top.insertMany([
@@ -128,7 +130,7 @@ db.Top.insertMany([
 ])
 ```
 
-## How to use the API
+## HOW TO USE IT?
 >[!TIP]
 > When inserting data always try to use the POST method **DO NOT** insert it yourself on mongo directly unless you know what you are doing
 
@@ -152,7 +154,7 @@ If you chose to not use the sample data given previously you will need to insert
 
 From then on, use the methods provided on the Swagger documentation to further expand your data. Use the same format for the body when requested.
 
-## Error handling
+## ERROR HANDLING
 >[!IMPORTANT]
 > Before anything check no other aplications are using ports 5000, 27017 or 6379
 
@@ -196,4 +198,4 @@ If this is the case you have to make sure you have data on your database and its
 
    ``db.Top.finOneAndDelete({id: exampleid123456ABCD})``
 
-When inserting data, please refer to the [HOW TO USE THE API](#how-to-use-the-api) section
+When inserting data, please refer to the [HOW TO USE THE API](#how-to-use-it) section
