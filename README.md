@@ -50,10 +50,10 @@ Access the mongo container bash:
 
 Input the following commands:
 
-``
+```
 use smashdb
 db.createCollection('Top')
-``
+```
 
 ## The API is ready to be used
 Type this command to run the API itself:
