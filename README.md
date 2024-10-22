@@ -32,11 +32,16 @@ Or simply download the zip file under the green **Code** button
 > Run these commands in the order they are shown here
 
 Open Docker Desktop an your command interpreter then run the following commands:
-1) Mongo:  ``docker run --name mongo-smash -p 27017:27017 -v mongo:/data/db -d mongo``
-2) Redis: ``docker run -d --name redis -p 6379:6379 redis``
+1) Mongo:
+   
+``docker run --name mongo-smash -p 27017:27017 -v mongo:/data/db -d mongo``
+
+2) Redis: 
+
+``docker run -d --name redis -p 6379:6379 redis``
 
 Then in you command interpreter go to the directory of SmashAPI, when you get there you will build the API image and run the container:
-1) ``docker build -t smashapi:1 .``
+``docker build -t smashapi:1 .``
 
 ## Create the database and collection
 Access the mongo container bash:
