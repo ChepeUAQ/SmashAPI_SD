@@ -27,6 +27,8 @@ Or simply download the zip file under the green **Code** button
 
 ## Create the necessary containers
 >[!IMPORTANT]
+> Make sure Docker Desktop is running from this point onward
+>
 > Run these commands in the order they are shown here
 
 Open Docker Desktop an your command interpreter then run the following commands:
